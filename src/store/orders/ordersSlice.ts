@@ -3,8 +3,10 @@ import {
   Reducer,
   AnyAction,
   PayloadAction,
+  createAsyncThunk,
 } from "@reduxjs/toolkit";
 import { RootState, AppThunk } from "..";
+import { getOrders } from "../../api/orders";
 
 export interface OrderItem {
   productId: string;
@@ -41,6 +43,11 @@ const initialState: OrdersState = {
   ordersList: [],
 };
 
+export const ordersAction = createAsyncThunk("orders/fetchOrders", async () => {
+  const response = await getOrders();
+  return response.data;
+});
+
 export const ordersSlice = createSlice({
   name: "orders",
   initialState,
@@ -60,4 +67,7 @@ export const ordersSlice = createSlice({
   },
 });
 
-export default {} as Reducer<unknown, AnyAction>;
+export const { addProductToOrder, removeProductFromOrder, placeOrder } =
+  ordersSlice.actions;
+
+export default ordersSlice.reducer;
