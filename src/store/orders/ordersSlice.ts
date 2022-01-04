@@ -43,9 +43,9 @@ const initialState: OrdersState = {
   ordersList: [],
 };
 
-export const ordersAction = createAsyncThunk("orders/fetchOrders", async () => {
+export const ordersAsync = createAsyncThunk("orders/fetchOrders", async () => {
   const response = await getOrders();
-  return response.data;
+  return response;
 });
 
 export const ordersSlice = createSlice({
@@ -65,9 +65,16 @@ export const ordersSlice = createSlice({
       return state;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(ordersAsync.fulfilled, (state, action) => {
+      state.ordersList = [...state.ordersList, action.payload];
+    });
+  },
 });
 
 export const { addProductToOrder, removeProductFromOrder, placeOrder } =
   ordersSlice.actions;
+
+export const selectOrders = (state: any) => state.orders.ordersList;
 
 export default ordersSlice.reducer;
