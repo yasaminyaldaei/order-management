@@ -1,33 +1,14 @@
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  createSlice,
-  Reducer,
-  AnyAction,
-  PayloadAction,
-  createAsyncThunk,
-} from "@reduxjs/toolkit";
-import { RootState, AppThunk } from "..";
-import { getOrders } from "../../api/orders";
-
-export interface OrderItem {
-  productId: string;
-  quantity: string;
-  unitPrice: string;
-  total: string;
-}
-
-export interface Order {
-  id: string;
-  customerId: string;
-  items: Array<OrderItem>;
-  total: string;
-}
+  addProductToOrder,
+  getOrders,
+  removeProductFromOrder,
+} from "../../api/orders";
+import { ModifyOrder, Order } from "../../types";
+import { displayAlert } from "../../utils/displayAlert";
 
 export interface OrdersState {
   ordersList: Array<Order>;
-}
-
-export interface ModifyOrderPayload {
-  orderId: string;
 }
 
 export interface PlaceOrderItemsPayload {
@@ -44,23 +25,42 @@ const initialState: OrdersState = {
 };
 
 export const ordersAsync = createAsyncThunk("orders/fetchOrders", async () => {
-  const response = await getOrders();
-  return response;
+  try {
+    const response = await getOrders();
+    return response;
+  } catch (error) {
+    displayAlert({ message: error.message });
+  }
 });
+
+export const addProductToOrderAsync = createAsyncThunk(
+  "orders/addProductToOrder",
+  async ({ orderId, productId }: ModifyOrder) => {
+    try {
+      const response = await addProductToOrder({ orderId, productId });
+      return response;
+    } catch (error) {
+      displayAlert({ message: error.message });
+    }
+  }
+);
+
+export const removeProductFromOrderAsync = createAsyncThunk(
+  "orders/removeProductFromOrder",
+  async ({ orderId, productId }: ModifyOrder) => {
+    try {
+      const response = await removeProductFromOrder({ orderId, productId });
+      return response;
+    } catch (error) {
+      displayAlert({ message: error.message });
+    }
+  }
+);
 
 export const ordersSlice = createSlice({
   name: "orders",
   initialState,
   reducers: {
-    addProductToOrder: (state, action: PayloadAction<ModifyOrderPayload>) => {
-      return state;
-    },
-    removeProductFromOrder: (
-      state,
-      action: PayloadAction<ModifyOrderPayload>
-    ) => {
-      return state;
-    },
     placeOrder: (state, action: PayloadAction<PlaceOrderPayload>) => {
       return state;
     },
@@ -71,9 +71,6 @@ export const ordersSlice = createSlice({
     });
   },
 });
-
-export const { addProductToOrder, removeProductFromOrder, placeOrder } =
-  ordersSlice.actions;
 
 export const selectOrders = (state: any) => state.orders.ordersList;
 
