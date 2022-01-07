@@ -2,22 +2,14 @@ import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   addProductToOrder,
   getOrders,
+  placeOrder,
   removeProductFromOrder,
 } from "../../api/orders";
-import { ModifyOrder, Order } from "../../types";
+import { ModifyOrder, Order, PlaceOrder } from "../../types";
 import { displayAlert } from "../../utils/displayAlert";
 
 export interface OrdersState {
   ordersList: Array<Order>;
-}
-
-export interface PlaceOrderItemsPayload {
-  productId: string;
-}
-
-export interface PlaceOrderPayload {
-  customerId: string;
-  items: Array<PlaceOrderItemsPayload>;
 }
 
 const initialState: OrdersState = {
@@ -57,14 +49,22 @@ export const removeProductFromOrderAsync = createAsyncThunk(
   }
 );
 
+export const placeOrderAsync = createAsyncThunk(
+  "orders/placeOrder",
+  async ({ customerId, items }: PlaceOrder) => {
+    try {
+      const response = await placeOrder({ customerId, items });
+      return response;
+    } catch (error) {
+      displayAlert({ message: error.message });
+    }
+  }
+);
+
 export const ordersSlice = createSlice({
   name: "orders",
   initialState,
-  reducers: {
-    placeOrder: (state, action: PayloadAction<PlaceOrderPayload>) => {
-      return state;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(ordersAsync.fulfilled, (state, action) => {
       state.ordersList = [...state.ordersList, action.payload];

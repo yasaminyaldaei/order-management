@@ -28,3 +28,12 @@ export interface ModifyOrder {
   orderId: ID;
   productId: ID;
 }
+
+export interface PlaceOrderItems {
+  productId: string;
+}
+
+export interface PlaceOrder {
+  customerId: string;
+  items: Array<PlaceOrderItems>;
+}
