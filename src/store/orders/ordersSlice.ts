@@ -5,6 +5,7 @@ import {
   placeOrder,
   removeProductFromOrder,
 } from "../../api/orders";
+import { transformOrder } from "../../api/orders/transformers";
 import { ModifyOrder, Order, PlaceOrder } from "../../types";
 import { displayAlert } from "../../utils/displayAlert";
 
@@ -19,7 +20,7 @@ const initialState: OrdersState = {
 export const ordersAsync = createAsyncThunk("orders/fetchOrders", async () => {
   try {
     const response = await getOrders();
-    return response;
+    return response.map(transformOrder);
   } catch (error) {
     displayAlert({ message: error.message });
   }
@@ -67,7 +68,7 @@ export const ordersSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(ordersAsync.fulfilled, (state, action) => {
-      state.ordersList = [...state.ordersList, action.payload];
+      state.ordersList = action.payload;
     });
   },
 });

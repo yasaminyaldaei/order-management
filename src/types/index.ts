@@ -1,27 +1,26 @@
 export type ID = string;
 export type Quantity = string;
-export type TotalPrice = string;
-export type UnitPrice = string;
+export type Price = string;
 
 export interface Product {
   id: ID;
   description: string;
   category: string;
-  price: UnitPrice;
+  price: Price;
 }
 
 export interface OrderItem {
   productId: ID;
   quantity: Quantity;
-  unitPrice: UnitPrice;
-  total: TotalPrice;
+  unitPrice: Price;
+  total: Price;
 }
 
 export interface Order {
   orderId: ID;
   customerId: string;
   items: Array<OrderItem>;
-  total: TotalPrice;
+  total: Price;
 }
 
 export interface ModifyOrder {

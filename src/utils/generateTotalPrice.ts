@@ -1,8 +1,8 @@
-import { Quantity, UnitPrice, TotalPrice } from "../types";
+import { Quantity, Price } from "../types";
 
 interface IGenerateTotalProductPrice {
   quantity: Quantity;
-  unitPrice: UnitPrice;
+  unitPrice: Price;
 }
 
 export function generateTotalProductPrice({
@@ -13,8 +13,8 @@ export function generateTotalProductPrice({
 }
 
 export function generateTotalOrderPrice(
-  ...totalProductPrices: Array<TotalPrice>
-): TotalPrice {
+  ...totalProductPrices: Array<Price>
+): Price {
   return String(
     totalProductPrices.reduce((previousValue, currentValue) => {
       return Number(previousValue) + Number(currentValue);
