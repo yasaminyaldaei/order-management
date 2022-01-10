@@ -44,7 +44,10 @@ export const removeProductFromOrderAsync = createAsyncThunk(
   async ({ orderId, productId }: ModifyOrder) => {
     try {
       const response = await removeProductFromOrder({ orderId, productId });
-      return response;
+      return {
+        orderId,
+        productId,
+      };
     } catch (error) {
       displayAlert({ message: error.message });
     }
@@ -77,6 +80,19 @@ export const ordersSlice = createSlice({
     });
     builder.addCase(ordersAsync.rejected, (state) => {
       state.ordersList = [];
+    });
+    builder.addCase(removeProductFromOrderAsync.fulfilled, (state, action) => {
+      const orderId = action.payload?.orderId;
+      const productId = action.payload?.productId;
+
+      state.ordersList = state.ordersList.map((order) => {
+        if (order.orderId === orderId) {
+          order.items = order.items.filter(
+            (item) => item.productId !== productId
+          );
+        }
+        return order;
+      });
     });
   },
 });

@@ -17,9 +17,10 @@ export const addProductToOrder = ({ orderId, productId }: ModifyOrder) =>
   });
 
 export const removeProductFromOrder = ({ orderId, productId }: ModifyOrder) =>
-  fetch(REMOVE_PRODUCT_EP, {
-    method: "POST",
-    body: JSON.stringify({ orderId, productId }),
+  new Promise((resolve, reject) => {
+    resolve({
+      status: 200,
+    });
   });
 
 export const placeOrder = ({ customerId, items }: PlaceOrder) =>
