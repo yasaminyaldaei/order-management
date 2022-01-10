@@ -1,5 +1,6 @@
 import React from "react";
 import { Order } from "../types";
+import { OrderItemOverview } from "./OrderItemOverview";
 
 export function OrderOverview({ orderId, customerId, items, total }: Order) {
   return (
@@ -8,7 +9,7 @@ export function OrderOverview({ orderId, customerId, items, total }: Order) {
       <span>{customerId}</span>
       <span>
         {items.map((orderItem) => (
-          <div></div>
+          <OrderItemOverview {...orderItem} />
         ))}
       </span>
       <span>{total}</span>
