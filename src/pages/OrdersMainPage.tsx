@@ -14,10 +14,6 @@ export function OrdersMainPage() {
     dispatch(ordersAsync());
   }, []);
 
-  useEffect(() => {
-    console.log(ordersList);
-  }, [ordersList]);
-
   return (
     <div>
       {ordersList && ordersList.length !== 0
