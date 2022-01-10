@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+import { RootState } from "..";
 import {
   addProductToOrder,
   getOrders,
@@ -20,7 +21,7 @@ const initialState: OrdersState = {
 export const ordersAsync = createAsyncThunk("orders/fetchOrders", async () => {
   try {
     const response = await getOrders();
-    return response.map(transformOrder);
+    return response;
   } catch (error) {
     displayAlert({ message: error.message });
   }
@@ -68,11 +69,18 @@ export const ordersSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(ordersAsync.fulfilled, (state, action) => {
-      state.ordersList = action.payload;
+      if (action.payload) {
+        state.ordersList = action.payload.map(transformOrder);
+      } else {
+        state.ordersList = [];
+      }
+    });
+    builder.addCase(ordersAsync.rejected, (state) => {
+      state.ordersList = [];
     });
   },
 });
 
-export const selectOrders = (state: any) => state.orders.ordersList;
+export const selectOrders = (state: RootState) => state.orders.ordersList;
 
 export default ordersSlice.reducer;

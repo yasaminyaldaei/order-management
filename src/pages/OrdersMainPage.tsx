@@ -4,7 +4,7 @@ import { OrderOverview } from "../components/OrderOverview";
 import { ordersAsync, selectOrders } from "../store/orders/ordersSlice";
 import { Order } from "../types";
 
-export function OrdersMain() {
+export function OrdersMainPage() {
   const dispatch = useDispatch();
   const ordersList = useSelector(selectOrders);
 
@@ -18,9 +18,11 @@ export function OrdersMain() {
 
   return (
     <div>
-      {ordersList.map((order: Order) => (
-        <OrderOverview key={order.orderId} {...order} />
-      ))}
+      {ordersList && ordersList.length !== 0
+        ? ordersList.map((order: Order) => (
+            <OrderOverview key={order.orderId} {...order} />
+          ))
+        : null}
     </div>
   );
 }
