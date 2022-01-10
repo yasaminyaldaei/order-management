@@ -1,7 +1,8 @@
-import { ModifyOrder, PlaceOrder, Product } from "../../types";
+import { Customer, ModifyOrder, PlaceOrder, Product } from "../../types";
 import { displayAlert } from "../../utils/displayAlert";
 import {
   ADD_PRODUCT_EP,
+  CUSTOMERS_EP,
   ORDERS_EP,
   PLACE_ORDER_EP,
   PRODUCTS_EP,
@@ -33,8 +34,17 @@ export const removeProductFromOrder = ({ orderId, productId }: ModifyOrder) =>
     });
   });
 
-export const placeOrder = ({ customerId, items }: PlaceOrder) =>
-  fetch(PLACE_ORDER_EP, {
-    method: "POST",
-    body: JSON.stringify({ customerId, items }),
+export const placeOrder = ({ customerId }: PlaceOrder) =>
+  new Promise(async (resolve, reject) => {
+    const response = await fetch(CUSTOMERS_EP);
+    const customers = (await response.json()) as Customer[];
+
+    const customer = customers.find((customer) => customer.id === customerId);
+    if (customer) {
+      resolve({
+        status: 200,
+      });
+    } else {
+      reject({ message: "Customer Not Found!" });
+    }
   });

@@ -12,6 +12,7 @@ import {
 } from "../../api/orders/transformers";
 import { ModifyOrder, Order, PlaceOrder, Product } from "../../types";
 import { displayAlert } from "../../utils/displayAlert";
+import { generateOrder } from "../../utils/generateOrder";
 
 export interface OrdersState {
   ordersList: Array<Order>;
@@ -62,10 +63,12 @@ export const removeProductFromOrderAsync = createAsyncThunk(
 
 export const placeOrderAsync = createAsyncThunk(
   "orders/placeOrder",
-  async ({ customerId, items }: PlaceOrder) => {
+  async ({ customerId }: PlaceOrder) => {
     try {
-      const response = await placeOrder({ customerId, items });
-      return response;
+      const response = await placeOrder({ customerId });
+      return {
+        customerId,
+      };
     } catch (error) {
       displayAlert({ message: error.message });
     }
@@ -112,6 +115,19 @@ export const ordersSlice = createSlice({
           }
           return order;
         });
+      }
+    });
+    builder.addCase(placeOrderAsync.fulfilled, (state, action) => {
+      const customerId = action.payload?.customerId;
+
+      if (customerId) {
+        state.ordersList = [
+          ...state.ordersList,
+          generateOrder({
+            customerId,
+            ordersCount: state.ordersList.length,
+          }),
+        ];
       }
     });
   },

@@ -28,11 +28,13 @@ export interface ModifyOrder {
   productId?: ID;
 }
 
-export interface PlaceOrderItems {
-  productId: string;
-}
-
 export interface PlaceOrder {
   customerId: string;
-  items: Array<PlaceOrderItems>;
+}
+
+export interface Customer {
+  id: string;
+  name: string;
+  since: string;
+  revenue: string;
 }

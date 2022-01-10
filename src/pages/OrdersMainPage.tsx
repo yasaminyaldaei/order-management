@@ -5,6 +5,7 @@ import { OrderOverview } from "../components/OrderOverview";
 import { ordersAsync, selectOrders } from "../store/orders/ordersSlice";
 import { Order } from "../types";
 import { GOTO_ORDER_DETAILS_PAGE } from "../routes";
+import { OrderPlace } from "../components/OrderPlace";
 
 export function OrdersMainPage() {
   const dispatch = useDispatch();
@@ -16,10 +17,14 @@ export function OrdersMainPage() {
 
   return (
     <div>
+      <OrderPlace />
       {ordersList && ordersList.length !== 0
         ? ordersList.map((order: Order) => (
-            <Link to={GOTO_ORDER_DETAILS_PAGE(order.orderId)}>
-              <OrderOverview key={order.orderId} {...order} />
+            <Link
+              key={order.orderId}
+              to={GOTO_ORDER_DETAILS_PAGE(order.orderId)}
+            >
+              <OrderOverview {...order} />
             </Link>
           ))
         : null}
