@@ -6,8 +6,11 @@ import {
   placeOrder,
   removeProductFromOrder,
 } from "../../api/orders";
-import { transformOrder } from "../../api/orders/transformers";
-import { ModifyOrder, Order, PlaceOrder } from "../../types";
+import {
+  transformOrder,
+  transformProductToOrderItem,
+} from "../../api/orders/transformers";
+import { ModifyOrder, Order, PlaceOrder, Product } from "../../types";
 import { displayAlert } from "../../utils/displayAlert";
 
 export interface OrdersState {
@@ -32,7 +35,10 @@ export const addProductToOrderAsync = createAsyncThunk(
   async ({ orderId, productId }: ModifyOrder) => {
     try {
       const response = await addProductToOrder({ orderId, productId });
-      return response;
+      return {
+        orderId,
+        product: response as Product,
+      };
     } catch (error) {
       displayAlert({ message: error.message });
     }
@@ -93,6 +99,20 @@ export const ordersSlice = createSlice({
         }
         return order;
       });
+    });
+    builder.addCase(addProductToOrderAsync.fulfilled, (state, action) => {
+      const orderId = action.payload?.orderId;
+      const product = action.payload?.product;
+
+      if (product) {
+        const newOrderItem = transformProductToOrderItem(product);
+        state.ordersList = state.ordersList.map((order) => {
+          if (order.orderId === orderId) {
+            order.items = [...order.items, newOrderItem];
+          }
+          return order;
+        });
+      }
     });
   },
 });

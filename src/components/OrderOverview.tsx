@@ -3,7 +3,17 @@ import { Order } from "../types";
 import { OrderItemOverview } from "./OrderItemOverview";
 import { OrderRemoveItem } from "./OrderRemoveItem";
 
-export function OrderOverview({ orderId, customerId, items, total }: Order) {
+interface IOrdersOverviewProps extends Order {
+  displayRemoveItem?: boolean;
+}
+
+export function OrderOverview({
+  orderId,
+  customerId,
+  items,
+  total,
+  displayRemoveItem = false,
+}: IOrdersOverviewProps) {
   return (
     <div>
       <span>{orderId}</span>
@@ -11,10 +21,12 @@ export function OrderOverview({ orderId, customerId, items, total }: Order) {
       <span>
         {items.map((orderItem) => (
           <div key={orderItem.productId}>
-            <OrderRemoveItem
-              orderId={orderId}
-              productId={orderItem.productId}
-            />
+            {displayRemoveItem && (
+              <OrderRemoveItem
+                orderId={orderId}
+                productId={orderItem.productId}
+              />
+            )}
             <OrderItemOverview {...orderItem} />
           </div>
         ))}

@@ -1,4 +1,4 @@
-import { ID, Order, Quantity, Price, OrderItem } from "../../types";
+import { ID, Order, Quantity, Price, OrderItem, Product } from "../../types";
 
 export interface APIOrderItem {
   "product-id": ID;
@@ -29,5 +29,14 @@ export function transformOrderItem(data: APIOrderItem): OrderItem {
     quantity: data.quantity,
     unitPrice: data["unit-price"],
     total: data.total,
+  };
+}
+
+export function transformProductToOrderItem(data: Product): OrderItem {
+  return {
+    productId: data.id,
+    quantity: "1",
+    unitPrice: data.price,
+    total: data.price,
   };
 }

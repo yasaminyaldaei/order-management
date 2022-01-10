@@ -24,8 +24,8 @@ export interface Order {
 }
 
 export interface ModifyOrder {
-  orderId: ID;
-  productId: ID;
+  orderId?: ID;
+  productId?: ID;
 }
 
 export interface PlaceOrderItems {
